@@ -1,13 +1,17 @@
 const newGameButton = document.querySelector(".js-new-game-button");
 const playerCardsContainer = document.querySelector(".js-player-cards-container");
+const chipCountContainer = document.querySelector(".js-chip-count-container");
+const potContainer = document.querySelector(".js-pot-container");
 
-playerCardsContainer.innerHTML = "ide jönnek majd a lapok";
 
 // program state
 let deckID = null;
 let playerCards = [];
+let playerChips = 100; // játékos zsetonjai
+let computerChips = 100; // gép zsetonjai
+let pot = 0; // kassza
 
-function renderPlayerCards() {
+function renderPlayercards() {
     let html = "";
 
     for (let card of playerCards) {
@@ -17,6 +21,25 @@ function renderPlayerCards() {
     playerCardsContainer.innerHTML = html;
 }
 
+function renderChips() {
+    chipCountContainer.innerHTML = `
+        <div class="chip-count">Player: ${playerChips}</div>
+        <div class="chip-count">Computer: ${computerChips}</div>
+    `;
+}
+
+function renderPot() {
+    potContainer.innerHTML =`
+        <div class="chip-count">Pot: ${pot}</div>
+    `;
+}
+
+function render() {
+    renderPlayercards();
+    renderChips();
+    renderPot();
+}
+
 function drawAndRenderPlayerCards() {
     if (deckID == null) return;
     fetch(`https://deckofcardsapi.com/api/deck/${deckID}/draw/?count=2`)
@@ -24,7 +47,7 @@ function drawAndRenderPlayerCards() {
         .then(function(response) {
             console.log("Húzott lapok", response)
             playerCards = response.cards;
-            renderPlayerCards();
+            render();
         });
 }
 
@@ -39,3 +62,4 @@ function startGame() {
 }
 
 newGameButton.addEventListener("click", startGame);
+render();
